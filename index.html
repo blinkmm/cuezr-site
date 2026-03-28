@@ -336,7 +336,6 @@
     }
     .mpanel-slide-bar {
       height: 100%; border-radius: 4px;
-      transition: width 0.8s ease;
     }
     .mpanel-slide-bar.blue   { background: var(--blue); box-shadow: 0 0 6px rgba(26,185,255,0.5); }
     .mpanel-slide-bar.orange { background: var(--orange); box-shadow: 0 0 6px rgba(255,145,0,0.5); }
@@ -635,6 +634,7 @@
                 <div class="mpanel-slide-bar-wrap">
                   <div class="mpanel-slide-bar blue" id="main-slide-bar" style="width:33%"></div>
                 </div>
+                <span class="mpanel-slide-total" id="main-slide-current">14</span>
                 <span class="mpanel-slide-sep">/</span>
                 <span class="mpanel-slide-total" id="main-slide-total">42</span>
                 <span class="mpanel-slides-label">Slides</span>
@@ -644,7 +644,7 @@
               <div class="mpanel-video-boxes">
                 <div class="mpanel-vbox">
                   <div class="mpanel-vbox-label">Total Length</div>
-                  <div class="mpanel-vbox-val dim" id="main-total">03:32</div>
+                  <div class="mpanel-vbox-val" id="main-total">03:32</div>
                 </div>
                 <div class="mpanel-vbox">
                   <div class="mpanel-vbox-label">Time Remaining</div>
@@ -671,6 +671,7 @@
                 <div class="mpanel-slide-bar-wrap">
                   <div class="mpanel-slide-bar orange" id="bkp-slide-bar" style="width:33%"></div>
                 </div>
+                <span class="mpanel-slide-total" id="bkp-slide-current">14</span>
                 <span class="mpanel-slide-sep">/</span>
                 <span class="mpanel-slide-total" id="bkp-slide-total">42</span>
                 <span class="mpanel-slides-label">Slides</span>
@@ -680,7 +681,7 @@
               <div class="mpanel-video-boxes">
                 <div class="mpanel-vbox">
                   <div class="mpanel-vbox-label">Total Length</div>
-                  <div class="mpanel-vbox-val dim" id="bkp-total">03:32</div>
+                  <div class="mpanel-vbox-val" id="bkp-total">03:32</div>
                 </div>
                 <div class="mpanel-vbox">
                   <div class="mpanel-vbox-label">Time Remaining</div>
@@ -886,54 +887,58 @@
 
   /* ── Live mockup animation ──────────────────────── */
   (function() {
-    const TOTAL    = 212; // seconds total video
-    let elapsed    = 134; // starting point ~63%
-    let slide      = 14;
-    const SLIDES   = 42;
-    let lastSlide  = Date.now();
+    const TOTAL  = 212;  // total video seconds
+    const SLIDES = 42;
+    const SPEED  = 1 / (TOTAL * 60); // advance full cycle over TOTAL seconds at 60fps
+    let progress = 0.33; // start at 33%
+    let lastTime = null;
+    let lastSlide = 0;
 
     function fmt(s) {
-      const m = Math.floor(s / 60);
-      return m + ':' + String(s % 60).padStart(2, '0');
+      s = Math.max(0, Math.round(s));
+      return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
     }
 
-    setInterval(() => {
-      elapsed = elapsed >= TOTAL ? 0 : elapsed + 1;
+    function tick(ts) {
+      if (lastTime !== null) {
+        const delta = (ts - lastTime) / 1000; // seconds elapsed since last frame
+        progress += delta / TOTAL;
+        if (progress >= 1) progress = 0;
+      }
+      lastTime = ts;
+
+      const elapsed  = progress * TOTAL;
       const remain   = TOTAL - elapsed;
-      const pct      = (elapsed / TOTAL * 100).toFixed(1) + '%';
-      const remainFmt = fmt(remain);
+      const pct      = (progress * 100).toFixed(3) + '%';
+      const slide    = Math.max(1, Math.ceil(progress * SLIDES));
+      const slidePct = (slide / SLIDES * 100).toFixed(3) + '%';
 
-      // progress bars (we show elapsed as the bar fill)
-      document.getElementById('main-slide-bar').style.width = pct;
-      document.getElementById('bkp-slide-bar').style.width  = pct;
-      document.getElementById('main-remain').textContent    = remainFmt;
-      document.getElementById('bkp-remain').textContent     = remainFmt;
-      document.getElementById('main-total').textContent     = fmt(TOTAL);
-      document.getElementById('bkp-total').textContent      = fmt(TOTAL);
+      document.getElementById('main-slide-bar').style.width     = pct;
+      document.getElementById('bkp-slide-bar').style.width      = pct;
 
-      if (remain <= 0) {
-        ['main-status','bkp-status'].forEach(id => {
-          const el = document.getElementById(id);
-          el.className = 'mpanel-status stopped';
-          el.innerHTML = '<span class="sdot"></span>STOPPED';
-        });
-      } else {
-        ['main-status','bkp-status'].forEach(id => {
-          const el = document.getElementById(id);
-          el.className = 'mpanel-status playing';
-          el.innerHTML = '<span class="sdot"></span>PLAYING';
-        });
+      if (slide !== lastSlide) {
+        document.getElementById('main-slide-current').textContent = slide;
+        document.getElementById('bkp-slide-current').textContent  = slide;
+        lastSlide = slide;
       }
 
-      // advance slide every ~9s
-      if (Date.now() - lastSlide > 9000) {
-        slide = slide >= SLIDES ? 1 : slide + 1;
-        lastSlide = Date.now();
-        const slidePct = (slide / SLIDES * 100).toFixed(1) + '%';
-        document.getElementById('main-slide-bar').style.width = slidePct;
-        document.getElementById('bkp-slide-bar').style.width  = slidePct;
-      }
-    }, 1000);
+      document.getElementById('main-remain').textContent = fmt(remain);
+      document.getElementById('bkp-remain').textContent  = fmt(remain);
+      document.getElementById('main-total').textContent  = fmt(TOTAL);
+      document.getElementById('bkp-total').textContent   = fmt(TOTAL);
+
+      const status = remain <= 0 ? 'stopped' : 'playing';
+      const label  = remain <= 0 ? 'STOPPED' : 'PLAYING';
+      ['main-status','bkp-status'].forEach(id => {
+        const el = document.getElementById(id);
+        el.className = 'mpanel-status ' + status;
+        el.innerHTML = '<span class="sdot"></span>' + label;
+      });
+
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
   })();
 </script>
 </body>
