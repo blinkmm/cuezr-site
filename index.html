@@ -887,45 +887,32 @@
 
   /* ── Live mockup animation ──────────────────────── */
   (function() {
-    const TOTAL  = 212;  // total video seconds
+    const TOTAL  = 212; // total video seconds (for display)
     const SLIDES = 42;
-    const SPEED  = 1 / (15 * 60); // full cycle in 15 seconds at 60fps
-    let progress = 0.33; // start at 33%
-    let lastTime = null;
-    let lastSlide = 0;
+    let slide    = 1;
+    let remain   = TOTAL;
 
     function fmt(s) {
       s = Math.max(0, Math.round(s));
       return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
     }
 
-    function tick(ts) {
-      if (lastTime !== null) {
-        const delta = (ts - lastTime) / 1000; // seconds elapsed since last frame
-        progress += delta / TOTAL;
-        if (progress >= 1) progress = 0;
-      }
-      lastTime = ts;
+    function update() {
+      // Advance slide, reset when done
+      slide = slide >= SLIDES ? 1 : slide + 1;
+      if (slide === 1) remain = TOTAL;
+      remain = Math.max(0, remain - (TOTAL / SLIDES));
 
-      const elapsed  = progress * TOTAL;
-      const remain   = TOTAL - elapsed;
-      const pct      = (progress * 100).toFixed(3) + '%';
-      const slide    = Math.max(1, Math.ceil(progress * SLIDES));
-      const slidePct = (slide / SLIDES * 100).toFixed(3) + '%';
+      const pct = (slide / SLIDES * 100).toFixed(2) + '%';
 
-      document.getElementById('main-slide-bar').style.width     = pct;
-      document.getElementById('bkp-slide-bar').style.width      = pct;
-
-      if (slide !== lastSlide) {
-        document.getElementById('main-slide-current').textContent = slide;
-        document.getElementById('bkp-slide-current').textContent  = slide;
-        lastSlide = slide;
-      }
-
-      document.getElementById('main-remain').textContent = fmt(remain);
-      document.getElementById('bkp-remain').textContent  = fmt(remain);
-      document.getElementById('main-total').textContent  = fmt(TOTAL);
-      document.getElementById('bkp-total').textContent   = fmt(TOTAL);
+      document.getElementById('main-slide-bar').style.width      = pct;
+      document.getElementById('bkp-slide-bar').style.width       = pct;
+      document.getElementById('main-slide-current').textContent  = slide;
+      document.getElementById('bkp-slide-current').textContent   = slide;
+      document.getElementById('main-remain').textContent         = fmt(remain);
+      document.getElementById('bkp-remain').textContent          = fmt(remain);
+      document.getElementById('main-total').textContent          = fmt(TOTAL);
+      document.getElementById('bkp-total').textContent           = fmt(TOTAL);
 
       const status = remain <= 0 ? 'stopped' : 'playing';
       const label  = remain <= 0 ? 'STOPPED' : 'PLAYING';
@@ -934,11 +921,9 @@
         el.className = 'mpanel-status ' + status;
         el.innerHTML = '<span class="sdot"></span>' + label;
       });
-
-      requestAnimationFrame(tick);
     }
 
-    requestAnimationFrame(tick);
+    setInterval(update, 1000);
   })();
 </script>
 </body>
