@@ -1,0 +1,86 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+
+    <!-- Background: deep navy with centred blue atmosphere -->
+    <radialGradient id="bgGrad" cx="256" cy="205" r="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#0f3570"/>
+      <stop offset="52%"  stop-color="#050e28"/>
+      <stop offset="100%" stop-color="#010810"/>
+    </radialGradient>
+
+    <!-- Blue neon glow — wide spread for tube effect -->
+    <filter id="blueGlow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5"  result="g1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="g2"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="g3"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="48" result="g4"/>
+      <feMerge>
+        <feMergeNode in="g4"/>
+        <feMergeNode in="g3"/>
+        <feMergeNode in="g2"/>
+        <feMergeNode in="g1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Orange neon glow — slightly warmer and wider -->
+    <filter id="orangeGlow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6"  result="g1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="g2"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="34" result="g3"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="54" result="g4"/>
+      <feMerge>
+        <feMergeNode in="g4"/>
+        <feMergeNode in="g3"/>
+        <feMergeNode in="g2"/>
+        <feMergeNode in="g1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Gentle glow for text -->
+    <filter id="textGlow" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="g"/>
+      <feMerge>
+        <feMergeNode in="g"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+  </defs>
+
+  <!-- ===== BACKGROUND ===== -->
+  <rect width="512" height="512" fill="#010810"/>
+  <rect width="512" height="512" fill="url(#bgGrad)"/>
+
+  <!-- ===== BLUE: hollow pause bars + left speed lines ===== -->
+  <g stroke="#1AB9FF" stroke-linecap="round" stroke-linejoin="round"
+     fill="none" filter="url(#blueGlow)">
+    <rect x="163" y="147" width="30" height="126" rx="7" stroke-width="10"/>
+    <rect x="201" y="147" width="30" height="126" rx="7" stroke-width="10"/>
+    <rect x="105" y="163" width="52" height="8"   rx="4"   fill="#1AB9FF" stroke="none"/>
+    <rect x="117" y="177" width="38" height="5"   rx="2.5" fill="#1AB9FF" stroke="none"/>
+    <rect x="105" y="246" width="52" height="8"   rx="4"   fill="#1AB9FF" stroke="none"/>
+    <rect x="117" y="260" width="38" height="5"   rx="2.5" fill="#1AB9FF" stroke="none"/>
+  </g>
+
+  <!-- ===== ORANGE: hollow play triangle + right speed lines ===== -->
+  <g stroke="#FF9100" stroke-linecap="round" stroke-linejoin="round"
+     fill="none" filter="url(#orangeGlow)">
+    <polygon points="237,140 237,280 364,210" stroke-width="10"/>
+    <rect x="368" y="190" width="46" height="8"  rx="4"   fill="#FF9100" stroke="none"/>
+    <rect x="368" y="220" width="36" height="5"  rx="2.5" fill="#FF9100" stroke="none"/>
+  </g>
+
+  <!-- ===== CUEZR TEXT ===== -->
+  <text
+    x="258" y="392"
+    text-anchor="middle"
+    font-family="'Helvetica Neue', Arial, sans-serif"
+    font-size="72"
+    font-weight="700"
+    letter-spacing="20"
+    fill="#C3D7F0"
+    filter="url(#textGlow)">CUEZR</text>
+
+</svg>
