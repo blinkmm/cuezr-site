@@ -588,8 +588,9 @@
         <p class="hero-sub">A visualizer for Powerpoint® using OSC Point and Companion — with real-time slide counts, video countdowns, and confidence the right presentaion is open in one clean view.</p>
 
         <div class="signup-wrap" id="hero-form-wrap">
-          <form class="signup-row" onsubmit="handleSignup(event,'ty-hero')">
-            <input type="email" placeholder="your@email.com" required autocomplete="email" />
+          <form class="signup-row" name="waitlist-hero" data-netlify="true" onsubmit="handleSignup(event,'ty-hero')">
+            <input type="hidden" name="form-name" value="waitlist-hero" />
+            <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" />
             <button type="submit" class="btn">Join the Waitlist</button>
           </form>
           <div class="ty-msg" id="ty-hero">
@@ -837,8 +838,9 @@
       <div class="foot-signup">
         <h3>Be first in line when we launch.</h3>
         <p>Early access goes to the waitlist first.</p>
-        <form class="signup-row" onsubmit="handleSignup(event,'ty-footer')" style="max-width:100%">
-          <input type="email" placeholder="your@email.com" required autocomplete="email" />
+        <form class="signup-row" name="waitlist-footer" data-netlify="true" onsubmit="handleSignup(event,'ty-footer')" style="max-width:100%">
+          <input type="hidden" name="form-name" value="waitlist-footer" />
+          <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" />
           <button type="submit" class="btn">Join Waitlist</button>
         </form>
         <div class="ty-msg" id="ty-footer" style="margin-top:13px">
@@ -861,10 +863,15 @@
   function handleSignup(e, tyId) {
     e.preventDefault();
     const form = e.target;
-    form.style.display = 'none';
-    document.getElementById(tyId).classList.add('show');
-    const note = document.getElementById('hero-note');
-    if (note && tyId === 'ty-hero') note.style.display = 'none';
+    const data = new FormData(form);
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString() })
+      .finally(() => {
+        form.style.display = 'none';
+        document.getElementById(tyId).classList.add('show');
+        const note = document.getElementById('hero-note');
+        if (note && tyId === 'ty-hero') note.style.display = 'none';
+      });
   }
 
   function scrollToHeroForm() {
