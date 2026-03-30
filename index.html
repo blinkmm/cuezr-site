@@ -390,6 +390,44 @@
     .mpanel-status.stopped .sdot { background: var(--text-lo); }
     .mpanel-status.stopped { color: var(--text-lo); }
 
+    /* Sync glow on panels */
+    .mock-panel { transition: box-shadow 0.6s ease, background 0.6s ease; }
+    .mock-panel.synced {
+      background: #0d1a2a;
+      box-shadow: inset 0 0 28px rgba(26,185,255,0.07), inset 0 0 6px rgba(26,185,255,0.05);
+    }
+
+    /* Sync status bar */
+    .mock-sync-bar {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 7px 14px;
+      background: var(--raised);
+      border-top: 1px solid var(--border-dim);
+      transition: background 0.5s ease;
+    }
+    .mock-sync-bar.synced { background: rgba(26,185,255,0.06); }
+    .mock-sync-bar.desynced { background: rgba(255,145,0,0.06); }
+    .sync-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .mock-sync-bar.synced   .sync-dot { background: var(--blue);   box-shadow: 0 0 7px rgba(26,185,255,0.7); }
+    .mock-sync-bar.desynced .sync-dot { background: var(--orange);  box-shadow: 0 0 7px rgba(255,145,0,0.7); }
+    .sync-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      transition: color 0.4s;
+    }
+    .mock-sync-bar.synced   .sync-label { color: var(--blue); }
+    .mock-sync-bar.desynced .sync-label { color: var(--orange); }
+    .sync-detail {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem; letter-spacing: 0.08em;
+      transition: color 0.4s;
+    }
+    .mock-sync-bar.synced   .sync-detail { color: rgba(26,185,255,0.5); }
+    .mock-sync-bar.desynced .sync-detail { color: rgba(255,145,0,0.5); }
+
     /* ─────────────────────────────────────────────── */
     /* PROBLEM                                        */
     /* ─────────────────────────────────────────────── */
@@ -722,6 +760,14 @@
             </div>
 
           </div><!-- /panels -->
+
+          <!-- Sync status bar -->
+          <div class="mock-sync-bar synced" id="mock-sync-bar">
+            <span class="sync-dot"></span>
+            <span class="sync-label" id="sync-label">Decks in Sync</span>
+            <span class="sync-detail" id="sync-detail">— same file · same slide</span>
+          </div>
+
         </div><!-- /shell -->
       </div><!-- /mockup -->
 
@@ -916,40 +962,68 @@
 
   /* ── Live mockup animation ──────────────────────── */
   (function() {
-    const TOTAL  = 212; // total video seconds (for display)
+    const TOTAL  = 212;
     const SLIDES = 42;
     let slide    = 1;
     let remain   = TOTAL;
+    let tick     = 0;
+    // Drift: backup goes out of sync for 4 ticks every 14 ticks
+    const DRIFT_START = 10;
+    const DRIFT_END   = 14;
 
     function fmt(s) {
       s = Math.max(0, Math.round(s));
       return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
     }
 
+    function setSync(inSync) {
+      const bar    = document.getElementById('mock-sync-bar');
+      const label  = document.getElementById('sync-label');
+      const detail = document.getElementById('sync-detail');
+      const panels = document.querySelectorAll('.mock-panel');
+
+      if (inSync) {
+        bar.className    = 'mock-sync-bar synced';
+        label.textContent  = 'Decks in Sync';
+        detail.textContent = '— same file · same slide';
+        panels.forEach(p => p.classList.add('synced'));
+      } else {
+        bar.className    = 'mock-sync-bar desynced';
+        label.textContent  = 'Sync Warning';
+        detail.textContent = '— slide mismatch detected';
+        panels.forEach(p => p.classList.remove('synced'));
+      }
+    }
+
     function update() {
-      // Advance slide, reset when done
+      tick = (tick + 1) % DRIFT_END;
+      const drifting = tick >= DRIFT_START;
+
       slide = slide >= SLIDES ? 1 : slide + 1;
       if (slide === 1) remain = TOTAL;
       remain = Math.max(0, remain - (TOTAL / SLIDES));
 
-      const pct = (slide / SLIDES * 100).toFixed(2) + '%';
+      const mainSlide = slide;
+      const bkpSlide  = drifting ? Math.max(1, slide - 1) : slide;
 
-      document.getElementById('main-slide-bar').style.width      = pct;
-      document.getElementById('bkp-slide-bar').style.width       = pct;
-      document.getElementById('main-slide-current').textContent  = slide;
-      document.getElementById('bkp-slide-current').textContent   = slide;
+      document.getElementById('main-slide-bar').style.width      = (mainSlide / SLIDES * 100).toFixed(2) + '%';
+      document.getElementById('bkp-slide-bar').style.width       = (bkpSlide  / SLIDES * 100).toFixed(2) + '%';
+      document.getElementById('main-slide-current').textContent  = mainSlide;
+      document.getElementById('bkp-slide-current').textContent   = bkpSlide;
       document.getElementById('main-remain').textContent         = fmt(remain);
       document.getElementById('bkp-remain').textContent          = fmt(remain);
       document.getElementById('main-total').textContent          = fmt(TOTAL);
       document.getElementById('bkp-total').textContent           = fmt(TOTAL);
 
       const status = remain <= 0 ? 'stopped' : 'playing';
-      const label  = remain <= 0 ? 'STOPPED' : 'PLAYING';
+      const lbl    = remain <= 0 ? 'STOPPED' : 'PLAYING';
       ['main-status','bkp-status'].forEach(id => {
         const el = document.getElementById(id);
         el.className = 'mpanel-status ' + status;
-        el.innerHTML = '<span class="sdot"></span>' + label;
+        el.innerHTML = '<span class="sdot"></span>' + lbl;
       });
+
+      setSync(!drifting);
     }
 
     setInterval(update, 1000);
