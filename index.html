@@ -399,7 +399,7 @@
 
     /* Sync status bar */
     .mock-sync-bar {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
       padding: 7px 14px;
       background: var(--raised);
       border-top: 1px solid var(--border-dim);
@@ -765,7 +765,6 @@
           <div class="mock-sync-bar synced" id="mock-sync-bar">
             <span class="sync-dot"></span>
             <span class="sync-label" id="sync-label">Decks in Sync</span>
-            <span class="sync-detail" id="sync-detail">— same file · same slide</span>
           </div>
 
         </div><!-- /shell -->
@@ -979,18 +978,15 @@
     function setSync(inSync) {
       const bar    = document.getElementById('mock-sync-bar');
       const label  = document.getElementById('sync-label');
-      const detail = document.getElementById('sync-detail');
       const panels = document.querySelectorAll('.mock-panel');
 
       if (inSync) {
         bar.className    = 'mock-sync-bar synced';
         label.textContent  = 'Decks in Sync';
-        detail.textContent = '— same file · same slide';
         panels.forEach(p => p.classList.add('synced'));
       } else {
         bar.className    = 'mock-sync-bar desynced';
         label.textContent  = 'Sync Warning';
-        detail.textContent = '— slide mismatch detected';
         panels.forEach(p => p.classList.remove('synced'));
       }
     }
