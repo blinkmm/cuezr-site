@@ -207,8 +207,9 @@
       cursor: pointer; white-space: nowrap;
       transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
     }
-    .btn:hover { opacity: .9; box-shadow: 0 4px 22px rgba(26,185,255,0.32); transform: translateY(-1px); }
-    .btn:active { transform: none; }
+    .btn:hover:not(:disabled) { opacity: .9; box-shadow: 0 4px 22px rgba(26,185,255,0.32); transform: translateY(-1px); }
+    .btn:active:not(:disabled) { transform: none; }
+    .btn:disabled { opacity: 0.38; cursor: not-allowed; }
     .signup-note { font-size: 0.75rem; color: var(--text-lo); }
 
     /* CASL consent checkbox */
@@ -666,10 +667,10 @@
             <input type="hidden" name="form-name" value="waitlist-hero" />
             <div class="signup-row">
               <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" />
-              <button type="submit" class="btn">Join the Waitlist</button>
+              <button type="submit" class="btn" id="hero-submit" disabled>Join the Waitlist</button>
             </div>
             <label class="casl-check">
-              <input type="checkbox" name="consent" required />
+              <input type="checkbox" name="consent" required onchange="document.getElementById('hero-submit').disabled=!this.checked" />
               <span>I agree to receive email updates about Cuezr's launch and beta access. You can unsubscribe at any time.</span>
             </label>
           </form>
@@ -926,10 +927,10 @@
           <input type="hidden" name="form-name" value="waitlist-footer" />
           <div class="signup-row">
             <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" />
-            <button type="submit" class="btn">Join Waitlist</button>
+            <button type="submit" class="btn" id="footer-submit" disabled>Join Waitlist</button>
           </div>
           <label class="casl-check">
-            <input type="checkbox" name="consent" required />
+            <input type="checkbox" name="consent" required onchange="document.getElementById('footer-submit').disabled=!this.checked" />
             <span>I agree to receive email updates about Cuezr's launch and beta access. You can unsubscribe at any time.</span>
           </label>
         </form>
