@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're on the list — Cuezr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:       #03030a;
+      --base:       #09090f;
+      --surface:    #0e0e18;
+      --raised:     #141422;
+      --card:       #191928;
+      --border:     #222236;
+      --border-dim: #181828;
+      --text-hi:    #e2e2ee;
+      --text-mid:   #8080a0;
+      --text-lo:    #444460;
+      --blue:       #1ab9ff;
+      --blue-dim:   rgba(26,185,255,0.07);
+      --green:      #00e5a0;
+      --r:          10px;
+      --rlg:        14px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--void);
+      color: var(--text-hi);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Grid bg */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(var(--border-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 10%, transparent 75%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* Glow orb */
+    body::after {
+      content: '';
+      position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 600px; z-index: 0;
+      background: radial-gradient(ellipse at 50% 25%, rgba(26,185,255,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 58px; padding: 0 max(5vw, 24px);
+      display: flex; align-items: center;
+      background: rgba(3,3,10,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 28px; width: auto; }
+    .nav-brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em;
+      color: var(--text-hi);
+    }
+    .nav-brand span { color: var(--blue); }
+
+    main {
+      position: relative; z-index: 1;
+      min-height: 100svh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 80px max(5vw, 24px) 60px;
+      text-align: center;
+    }
+
+    /* Check circle */
+    .check-ring {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(0,229,160,0.08);
+      border: 1.5px solid rgba(0,229,160,0.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 32px;
+      animation: pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+    @keyframes pop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+    .check-ring svg { width: 36px; height: 36px; color: var(--green); }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 1.1;
+      color: #fff; margin-bottom: 20px;
+    }
+    h1 .word {
+      background: linear-gradient(130deg, #fff 35%, var(--blue) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sub {
+      font-size: 1.05rem; color: var(--text-mid);
+      line-height: 1.72; max-width: 480px; margin: 0 auto 36px;
+    }
+    .sub strong { color: var(--text-hi); font-weight: 600; }
+
+    /* Email confirmation notice */
+    .confirm-box {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: var(--rlg);
+      padding: 18px 22px;
+      max-width: 460px; width: 100%;
+      margin: 0 auto 36px;
+      text-align: left;
+    }
+    .confirm-box .icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: var(--blue-dim);
+      border: 1px solid rgba(26,185,255,0.2);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--blue);
+    }
+    .confirm-box .icon svg { width: 18px; height: 18px; }
+    .confirm-box-text h3 {
+      font-size: 0.9rem; font-weight: 700; color: var(--text-hi);
+      margin-bottom: 4px; letter-spacing: -0.01em;
+    }
+    .confirm-box-text p {
+      font-size: 0.82rem; color: var(--text-mid); line-height: 1.55;
+    }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 26px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(26,185,255,0.28);
+      color: var(--blue);
+      border-radius: var(--r);
+      font-size: 0.88rem; font-weight: 600; letter-spacing: 0.03em;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    .back-link:hover {
+      background: rgba(26,185,255,0.13);
+      box-shadow: 0 4px 22px rgba(26,185,255,0.18);
+      transform: translateY(-1px);
+    }
+    .back-link svg { width: 15px; height: 15px; }
+
+    footer {
+      position: relative; z-index: 1;
+      padding: 24px max(5vw, 24px);
+      border-top: 1px solid var(--border-dim);
+      text-align: center;
+    }
+    footer p { font-size: 0.72rem; color: var(--text-lo); }
+    footer p + p { margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <img src="Logo/CUEZR_Logo.png" alt="Cuezr" />
+      <span class="nav-brand">CUEZR<span>.</span></span>
+    </a>
+  </nav>
+
+  <main>
+    <!-- Check icon -->
+    <div class="check-ring">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+
+    <div class="eyebrow">You're on the list</div>
+
+    <h1>We'll be in touch<br />when beta is ready.</h1>
+
+    <p class="sub">
+      Thanks for signing up — you'll be among the <strong>first to know</strong> when Cuezr opens for beta access. We're building something we think operators will genuinely love.
+    </p>
+
+    <!-- Email confirmation notice -->
+    <div class="confirm-box">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+      </div>
+      <div class="confirm-box-text">
+        <h3>One more step — check your inbox</h3>
+        <p>We've sent you a confirmation email. Please click the link inside to verify your address and confirm you'd like to receive updates from us. This keeps us compliant with Canadian anti-spam law (CASL) and ensures our messages reach you.</p>
+      </div>
+    </div>
+
+    <a href="/" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Cuezr
+    </a>
+  </main>
+
+  <footer>
+    <p>© 2025 Blink Multimedia. All rights reserved.</p>
+    <p>You're receiving this because you signed up at cuezr.com. You can unsubscribe at any time.</p>
+  </footer>
+
+</body>
+</html>
