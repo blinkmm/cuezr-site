@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support & FAQ — CUEZR</title>
+  <link rel="icon" type="image/png" href="Logo/CUEZR.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:       #03030a;
+      --base:       #09090f;
+      --surface:    #0e0e18;
+      --raised:     #141422;
+      --card:       #191928;
+      --border:     #222236;
+      --border-dim: #181828;
+      --text-hi:    #e2e2ee;
+      --text-mid:   #8080a0;
+      --text-lo:    #444460;
+      --blue:       #1ab9ff;
+      --blue-dim:   rgba(26,185,255,0.07);
+      --orange:     #ff9a3c;
+      --green:      #00e5a0;
+      --yellow:     #ffcc40;
+      --red:        #ff5a5a;
+      --r:          10px;
+      --rlg:        14px;
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--void);
+      color: var(--text-hi);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(var(--border-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 10%, transparent 75%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 600px; z-index: 0;
+      background: radial-gradient(ellipse at 50% 25%, rgba(26,185,255,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 58px; padding: 0 max(5vw, 24px);
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(3,3,10,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 28px; width: auto; }
+    .nav-brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em;
+      color: var(--text-hi);
+    }
+    .nav-brand span { color: var(--blue); }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 18px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(26,185,255,0.28);
+      color: var(--blue);
+      border-radius: var(--r);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.03em;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover {
+      background: rgba(26,185,255,0.13);
+      box-shadow: 0 4px 22px rgba(26,185,255,0.18);
+      transform: translateY(-1px);
+    }
+
+    main {
+      position: relative; z-index: 1;
+      padding: 110px max(5vw, 24px) 60px;
+      max-width: 920px; margin: 0 auto;
+    }
+
+    .hero { text-align: center; margin-bottom: 56px; }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 1.1;
+      color: #fff; margin-bottom: 18px;
+    }
+    h1 .word {
+      background: linear-gradient(130deg, #fff 35%, var(--blue) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .lede {
+      font-size: 1.05rem; color: var(--text-mid);
+      line-height: 1.72; max-width: 600px; margin: 0 auto;
+    }
+    .lede strong { color: var(--text-hi); font-weight: 600; }
+
+    /* Sections */
+    .section { margin-bottom: 56px; }
+    .section-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 12px;
+    }
+    .section h2 {
+      font-size: 1.85rem; font-weight: 800; color: #fff;
+      letter-spacing: -0.02em; margin-bottom: 14px; line-height: 1.2;
+    }
+    .section > p.intro {
+      font-size: 0.96rem; color: var(--text-mid);
+      line-height: 1.7; margin-bottom: 28px; max-width: 640px;
+    }
+
+    /* Element table / definition list */
+    .deflist {
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: var(--rlg);
+      overflow: hidden;
+    }
+    .defrow {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      padding: 20px 26px;
+      border-bottom: 1px solid var(--border-dim);
+      align-items: start;
+    }
+    .defrow:last-child { border-bottom: none; }
+    .defrow dt {
+      font-size: 0.86rem; font-weight: 700; color: #fff;
+      letter-spacing: -0.005em;
+    }
+    .defrow dt .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+    .tag.main   { background: rgba(26,185,255,0.13); color: var(--blue); border: 1px solid rgba(26,185,255,0.3); }
+    .tag.backup { background: rgba(255,154,60,0.13); color: var(--orange); border: 1px solid rgba(255,154,60,0.35); }
+    .tag.green  { background: rgba(0,229,160,0.12); color: var(--green); border: 1px solid rgba(0,229,160,0.3); }
+    .tag.yellow { background: rgba(255,204,64,0.12); color: var(--yellow); border: 1px solid rgba(255,204,64,0.3); }
+    .tag.red    { background: rgba(255,90,90,0.12); color: var(--red); border: 1px solid rgba(255,90,90,0.3); }
+
+    .defrow dd {
+      font-size: 0.88rem; color: var(--text-mid);
+      line-height: 1.65;
+    }
+    .defrow dd strong { color: var(--text-hi); font-weight: 600; }
+    .defrow dd code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1px 7px;
+      border-radius: 4px;
+      color: var(--blue);
+    }
+
+    @media (max-width: 700px) {
+      .defrow { grid-template-columns: 1fr; gap: 8px; padding: 18px 20px; }
+    }
+
+    /* FAQ */
+    .faq {
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: var(--rlg);
+      overflow: hidden;
+    }
+    details {
+      border-bottom: 1px solid var(--border-dim);
+    }
+    details:last-child { border-bottom: none; }
+    details summary {
+      padding: 20px 26px;
+      cursor: pointer;
+      font-size: 0.96rem;
+      font-weight: 600;
+      color: #fff;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      transition: background 0.15s;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after {
+      content: '+';
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--blue);
+      font-size: 1.4rem;
+      font-weight: 400;
+      line-height: 1;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    details[open] summary::after { content: '−'; }
+    details summary:hover { background: rgba(26,185,255,0.04); }
+    details .answer {
+      padding: 0 26px 22px;
+      font-size: 0.9rem;
+      color: var(--text-mid);
+      line-height: 1.72;
+    }
+    details .answer p { margin-bottom: 12px; }
+    details .answer p:last-child { margin-bottom: 0; }
+    details .answer strong { color: var(--text-hi); font-weight: 600; }
+    details .answer a { color: var(--blue); text-decoration: none; }
+    details .answer a:hover { text-decoration: underline; }
+    details .answer code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1px 7px;
+      border-radius: 4px;
+      color: var(--blue);
+    }
+    details .answer ul { margin: 10px 0 12px 18px; }
+    details .answer li { margin-bottom: 6px; }
+
+    .help-box {
+      background: linear-gradient(180deg, rgba(26,185,255,0.06), var(--raised) 80%);
+      border: 1px solid rgba(26,185,255,0.3);
+      border-radius: var(--rlg);
+      padding: 28px 32px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .help-box h3 {
+      font-size: 1.2rem; font-weight: 800; color: #fff;
+      letter-spacing: -0.01em; margin-bottom: 6px;
+    }
+    .help-box p { font-size: 0.9rem; color: var(--text-mid); margin-bottom: 18px; }
+    .help-box .btn-row {
+      display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    }
+    .help-box .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 22px;
+      background: var(--blue); color: #001422;
+      border-radius: var(--r);
+      font-weight: 700; font-size: 0.88rem;
+      text-decoration: none;
+      box-shadow: 0 4px 18px rgba(26,185,255,0.22);
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .help-box .btn:hover { opacity: .92; transform: translateY(-1px); }
+    .help-box .btn.secondary {
+      background: transparent;
+      color: var(--text-hi);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .help-box .btn.secondary:hover {
+      border-color: rgba(26,185,255,0.45);
+      color: var(--blue);
+      background: rgba(26,185,255,0.04);
+    }
+
+    footer {
+      position: relative; z-index: 1;
+      padding: 30px max(5vw, 24px);
+      border-top: 1px solid var(--border-dim);
+      text-align: center;
+      margin-top: 40px;
+    }
+    footer p { font-size: 0.72rem; color: var(--text-lo); }
+    footer p + p { margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="Logo/CUEZR.png" alt="CUEZR" />
+      <span class="nav-brand">CUEZR<span>.</span></span>
+    </a>
+    <a href="download.html" class="nav-cta">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Beta
+    </a>
+  </nav>
+
+  <main>
+
+    <div class="hero">
+      <div class="eyebrow">Support &amp; Docs</div>
+      <h1>Getting the most<br /><span class="word">out of CUEZR</span>.</h1>
+      <p class="lede">
+        Here's what every element on the dashboard means, how to configure the app for your rig, and answers to the questions that come up most often.
+      </p>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         INTERFACE ELEMENTS
+         ══════════════════════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-eyebrow">Interface</div>
+      <h2>What you're looking at</h2>
+      <p class="intro">
+        The CUEZR dashboard shows two side-by-side cards — one for your Main PowerPoint machine and one for the Backup. Here's what every element on those cards is telling you.
+      </p>
+
+      <dl class="deflist">
+        <div class="defrow">
+          <dt>
+            MAIN badge
+            <br><span class="tag main">MAIN</span>
+          </dt>
+          <dd>
+            Identifies the left card as your primary PowerPoint machine — you can name it anything: <strong>ENGLISH</strong>, <strong>FRENCH</strong>, etc. It provides slide numbers, progress bars, and information about sections and video playback.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>
+            BACKUP badge
+            <br><span class="tag backup">BACKUP</span>
+          </dt>
+          <dd>
+            The secondary PowerPoint machine. If your show doesn't use a backup, leave this card unconfigured — it'll just sit idle with "No Signal" and won't affect anything. But if it does, then this area will give you confirmation of sync, and the same info as MAIN.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Receiving Data indicator</dt>
+          <dd>
+            Top-right of each card. The blue dot flashes bright every time a new OSC packet arrives from that machine. When data stops flowing (signal timeout exceeded), the dot goes grey. This is the fastest way to confirm your OSC Point connection is actually live.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Presentation name</dt>
+          <dd>
+            The currently open .pptx filename. If this is blank, CUEZR isn't receiving presentation metadata yet — check that OSC Point is installed, enabled, and pointed at your CUEZR machine's IP and port. This gives you confidence of the actual file name of the show you are running.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Section badge + slides remaining</dt>
+          <dd>
+            Below the presentation name. Shows which PowerPoint Section the current slide belongs to, plus how many slides are left in that section. Cuts down on counting when your show caller asks how many more slides for this presenter.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Current slide / total slides</dt>
+          <dd>
+            This number flashes blue (main) or orange (backup) every time the slide advances. <strong>Total slides</strong> matches what the presenter sees in their Presenter View.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Build counter</dt>
+          <dd>
+            Displays as <code>BUILD 1/4</code> when the current slide has animation builds. Tells you which build step is currently showing and how many remain before the slide advances.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>VIDEO — Total Length</dt>
+          <dd>
+            Duration of the video on the current slide, if any. Shows <code>—</code> when the slide has no video. Reads directly from OSC Point's media feedback.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>
+            VIDEO — Time Remaining
+            <br><span class="tag yellow">≤ 30s</span>
+            <span class="tag red">≤ 10s</span>
+          </dt>
+          <dd>
+            Countdown in real time while the video plays. Turns <strong>yellow at 30 seconds remaining</strong>, then <strong>red at 10 seconds remaining</strong> — so the video op can see the cue coming from across the room.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Playback status</dt>
+          <dd>
+            Small text below the video counters — reads <code>PLAYING</code>, <code>PAUSED</code>, or <code>STOPPED</code>. Matches the state OSC Point reports from PowerPoint.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>
+            DECKS IN SYNC
+            <br><span class="tag main">BLUE</span>
+          </dt>
+          <dd>
+            At the bottom of the window. Shows blue when Main and Backup are on the same presentation and the same slide. The outer interface also picks up a soft blue glow when in sync, so you get an at-a-glance confirmation from across the room.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>
+            SYNC WARNING
+            <br><span class="tag yellow">YELLOW</span>
+          </dt>
+          <dd>
+            Appears instead of "Decks In Sync" when the two machines report different slide numbers. During media playback the warning is suppressed so normal operational differences don't throw false alerts.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Refresh button</dt>
+          <dd>
+            Top-right of the window. Manually sends refresh to both OSC Point instances, forcing them to resend their current state. Useful if you open CUEZR mid-show and need to jumpstart the feedback stream.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Settings (gear icon)</dt>
+          <dd>
+            Opens the Settings panel where IP addresses, ports, labels, and display options are configured. All settings persist between sessions.
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         SETTINGS PANEL
+         ══════════════════════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-eyebrow">Settings Panel</div>
+      <h2>Configuration reference</h2>
+      <p class="intro">
+        Open Settings via the gear icon. Every field is saved automatically and persists across restarts. Here's what each one does.
+      </p>
+
+      <dl class="deflist">
+        <div class="defrow">
+          <dt>Main Label / Backup Label</dt>
+          <dd>
+            Custom display names for the two machines (e.g., "Stage Left" and "Stage Right", "Rehearsal" and "Live"). Purely cosmetic — affects only the badges shown on the cards. Leave as MAIN / BACKUP if you don't care.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Main Computer IP / Port</dt>
+          <dd>
+            The <strong>IP address and OSC listening port of the Main PowerPoint machine</strong>. This is where CUEZR sends its keepalive and refresh commands to wake up the OSC Point feedback stream. Default OSC Point port is <code>35550</code> or <code>35552</code>. Check your OSC Point settings on the PowerPoint machine to confirm.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Backup Computer IP / Port</dt>
+          <dd>
+            Same as above, for the Backup PowerPoint machine. If you only have one machine, leave these fields blank — the Backup card will just show "No Signal" and won't affect anything.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Main OSC Port</dt>
+          <dd>
+            The port <strong>CUEZR listens on</strong> for incoming OSC data from the Main machine. OSC Point on the Main machine must be configured to send its feedback stream to this port. Default <code>7000</code>.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Backup OSC Port</dt>
+          <dd>
+            Same as above but for Backup. <strong>Must be different from the Main OSC Port</strong> since the two machines need separate listening sockets. Default <code>7001</code>.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>Signal Timeout (seconds)</dt>
+          <dd>
+            How long CUEZR waits without receiving a packet before marking a machine as idle and greying out its "Receiving Data" dot. Default <code>60</code>. Lower it if you want faster disconnect detection; raise it if you have a flaky network that occasionally blips.
+          </dd>
+        </div>
+        <div class="defrow">
+          <dt>
+            Companion IP / Port
+            <br><span class="tag yellow">UNDER DEVELOPMENT</span>
+          </dt>
+          <dd>
+            <em>Optional.</em> If you use Bitfocus Companion to trigger CUEZR actions, enter the IP and port of your Companion instance here. Leave blank if you don't use Companion. To use Companion, a handful of triggers need to be added to Companion to pull CUEZR's data. More information can be found <a href="companion-setup.html">here</a>.
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         FAQ
+         ══════════════════════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-eyebrow">FAQ</div>
+      <h2>Frequently asked questions</h2>
+
+      <div class="faq">
+
+        <details open>
+          <summary>What is CUEZR?</summary>
+          <div class="answer">
+            <p>CUEZR is a live presentation monitoring dashboard for event ops. It reads real-time slide, build, and video data from PowerPoint via the OSC Point plugin and displays it side-by-side for Main and Backup machines. Designed to sit in your multiview so the whole production team can see exactly what slide the presenter is on, how many builds remain, and how much time is left on any playing video.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Do I need OSC Point?</summary>
+          <div class="answer">
+            <p>Yes — CUEZR reads data from PowerPoint through the OSC Point plugin. OSC Point is a separate third-party tool that installs as a PowerPoint add-in and broadcasts slide, build, and media state over OSC.</p>
+            <p>Grab it at <a href="https://oscpoint.com" target="_blank" rel="noopener">oscpoint.com</a>. Install it on every PowerPoint machine you want CUEZR to monitor.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>How do I connect CUEZR to my PowerPoint machines?</summary>
+          <div class="answer">
+            <p>You need all machines on the same network. Then:</p>
+            <ul>
+              <li>On each PowerPoint machine: install OSC Point and configure it to send feedback to the IP of the machine running CUEZR, on the port CUEZR is listening on (default <code>7000</code> for Main, <code>7001</code> for Backup).</li>
+              <li>In CUEZR Settings: enter the IP address of each PowerPoint machine and OSC Point's listening port (default <code>35550</code> or <code>35552</code>).</li>
+              <li>Open your deck in PowerPoint and start a slideshow. CUEZR should light up with "Receiving Data" within a second or two.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Why does my Backup card show "No Signal"?</summary>
+          <div class="answer">
+            <p>A few things to check, in order:</p>
+            <ul>
+              <li><strong>Is OSC Point enabled and running</strong> on the Backup PowerPoint machine? Check the OSC Point panel inside PowerPoint.</li>
+              <li><strong>Are the IPs and ports correct</strong> in CUEZR Settings? Backup needs a different listening port than Main.</li>
+              <li><strong>Firewall:</strong> make sure UDP traffic on your OSC port is allowed on both the CUEZR machine and the PowerPoint machine.</li>
+              <li><strong>Same network:</strong> both machines need to be on the same subnet. VPNs and some managed Wi-Fi setups block UDP.</li>
+              <li><strong>Manually refresh:</strong> click the refresh button (top-right) to force OSC Point to re-send its state.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Main and Backup show different slides — what do I do?</summary>
+          <div class="answer">
+            <p>In most cases this is a genuine operational situation — the operator is clicking on one machine but not the other, or one deck is a slide ahead/behind for rehearsal. The SYNC WARNING is there to flag exactly that.</p>
+            <p>If both machines are <strong>actually</strong> on the same slide but CUEZR is showing a mismatch, the Backup OSC Point may have dropped a feedback packet. CUEZR's automatic keepalive (every 1.5 seconds) will usually correct this within two seconds. If it doesn't, click the Refresh button.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Why is the slide number grey instead of blue/orange?</summary>
+          <div class="answer">
+            <p>The big slide number flashes in its accent colour (blue for Main, orange for Backup) every time a new slide arrives, then fades back to white after about a second. That fade is intentional — it gives you a clear "something just changed" cue without leaving the UI permanently lit up. Grey (dim) means no new data has come in recently on that machine.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>What do the yellow and red time-remaining colours mean?</summary>
+          <div class="answer">
+            <p>On the VIDEO — Time Remaining counter:</p>
+            <ul>
+              <li><strong>White</strong> = more than 30 seconds left on the current video.</li>
+              <li><strong>Yellow</strong> = 30 seconds or less. Start looking up.</li>
+              <li><strong>Red</strong> = 10 seconds or less. Get ready to cue the next thing.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>My Mac says "CUEZR can't be opened because Apple cannot check it for malicious software"</summary>
+          <div class="answer">
+            <p>CUEZR for Mac is signed with an Apple Developer ID but the beta builds are not yet notarized. On first launch, <strong>right-click (or Control-click) the app and choose Open</strong> instead of double-clicking. macOS will then let you confirm the exception once, and from then on you can launch it normally.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Windows SmartScreen is blocking CUEZR</summary>
+          <div class="answer">
+            <p>The beta build is not yet code-signed for Windows, so SmartScreen shows a warning on first launch. Click <strong>More info → Run anyway</strong>. This only happens once per machine.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Can I run CUEZR on the same machine as PowerPoint?</summary>
+          <div class="answer">
+            <p>Yes — set the Main Computer IP to <code>127.0.0.1</code> and everything works locally. In practice most shows run CUEZR on a dedicated machine alongside the switcher, but there's nothing stopping you from running it on the PowerPoint op's laptop if you just want a quick verification view.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Does CUEZR send my data anywhere?</summary>
+          <div class="answer">
+            <p>No. CUEZR runs entirely on your local network. There's no cloud, no telemetry, no account — it just listens for OSC on the ports you configure and displays what it receives. The only outbound network traffic is the keepalive and refresh commands it sends back to your OSC Point machines.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Is CUEZR really free?</summary>
+          <div class="answer">
+            <p>Yes. CUEZR is free to download and use, for personal or commercial productions. If it proves itself on a real gig, <a href="download.html">consider supporting development</a> — funding helps move new features forward.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>How do I get updates?</summary>
+          <div class="answer">
+            <p>Subscribe on the <a href="index.html#hero-form-wrap">homepage</a> and we'll email you as new releases and features ship.</p>
+          </div>
+        </details>
+
+      </div>
+    </div>
+
+    <!-- Still stuck? -->
+    <div class="help-box">
+      <h3>Still stuck?</h3>
+      <p>If none of the above solves your problem, email us directly or join the active discussion on Facebook.</p>
+      <div class="btn-row">
+        <a href="mailto:aaron@cuezr.com" class="btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email Support
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61573288703373" target="_blank" rel="noopener" class="btn secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+          Discuss on Facebook
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 2026 Blink Multimedia. All rights reserved.</p>
+    <p>PowerPoint® is a registered trademark of Microsoft Corporation. OSC Point™ is a trademark of its respective owner. CUEZR is not affiliated with or endorsed by Microsoft Corporation or the makers of OSC Point.</p>
+  </footer>
+
+</body>
+</html>

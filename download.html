@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download — CUEZR</title>
+  <link rel="icon" type="image/png" href="Logo/CUEZR.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:       #03030a;
+      --base:       #09090f;
+      --surface:    #0e0e18;
+      --raised:     #141422;
+      --card:       #191928;
+      --border:     #222236;
+      --border-dim: #181828;
+      --text-hi:    #e2e2ee;
+      --text-mid:   #8080a0;
+      --text-lo:    #444460;
+      --blue:       #1ab9ff;
+      --blue-dim:   rgba(26,185,255,0.07);
+      --orange:     #ff9a3c;
+      --orange-dim: rgba(255,154,60,0.08);
+      --green:      #00e5a0;
+      --r:          10px;
+      --rlg:        14px;
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--void);
+      color: var(--text-hi);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(var(--border-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 10%, transparent 75%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 600px; z-index: 0;
+      background: radial-gradient(ellipse at 50% 25%, rgba(26,185,255,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 58px; padding: 0 max(5vw, 24px);
+      display: flex; align-items: center;
+      background: rgba(3,3,10,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 28px; width: auto; }
+    .nav-brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em;
+      color: var(--text-hi);
+    }
+    .nav-brand span { color: var(--blue); }
+
+    main {
+      position: relative; z-index: 1;
+      min-height: 100svh;
+      padding: 110px max(5vw, 24px) 60px;
+      max-width: 860px; margin: 0 auto;
+    }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 16px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 1.1;
+      color: #fff; margin-bottom: 20px;
+      text-align: center;
+    }
+    h1 .word {
+      background: linear-gradient(130deg, #fff 35%, var(--blue) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .lede {
+      font-size: 1.05rem; color: var(--text-mid);
+      line-height: 1.72; max-width: 560px;
+      margin: 0 auto 48px;
+      text-align: center;
+    }
+    .lede strong { color: var(--text-hi); font-weight: 600; }
+
+    .card {
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: var(--rlg);
+      padding: 36px 32px;
+      margin-bottom: 20px;
+    }
+    .card.primary {
+      border-color: rgba(26,185,255,0.35);
+      background: linear-gradient(180deg, rgba(26,185,255,0.06), var(--raised) 70%);
+      box-shadow: 0 0 0 1px rgba(26,185,255,0.15), 0 20px 40px -24px rgba(26,185,255,0.25);
+    }
+
+    .card-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 10px;
+    }
+    .card-eyebrow.muted { color: var(--text-mid); }
+
+    .card h2 {
+      font-size: 1.5rem; font-weight: 800; color: #fff;
+      letter-spacing: -0.01em; margin-bottom: 10px; line-height: 1.25;
+    }
+    .card p {
+      font-size: 0.94rem; color: var(--text-mid);
+      line-height: 1.7; margin-bottom: 22px;
+    }
+    .card p.small { font-size: 0.82rem; margin-bottom: 0; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 28px;
+      border: none; cursor: pointer;
+      border-radius: var(--r);
+      font-family: inherit; font-size: 0.92rem;
+      font-weight: 700; letter-spacing: 0.02em;
+      text-decoration: none;
+      transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    .btn-primary {
+      background: var(--blue);
+      color: #001422;
+      box-shadow: 0 4px 22px rgba(26,185,255,0.22);
+    }
+    .btn-primary:hover { opacity: .92; box-shadow: 0 6px 28px rgba(26,185,255,0.36); transform: translateY(-1px); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-hi);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: rgba(26,185,255,0.35); color: var(--blue); transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn svg { width: 15px; height: 15px; }
+
+    .divider {
+      display: flex; align-items: center; gap: 20px;
+      margin: 32px 0 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-lo);
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--border-dim);
+    }
+
+    .form-row {
+      display: flex; gap: 10px; margin-bottom: 14px;
+    }
+    .form-row input[type="email"] {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      color: var(--text-hi);
+      padding: 14px 16px;
+      font-family: inherit; font-size: 0.92rem;
+    }
+    .form-row input[type="email"]::placeholder { color: var(--text-lo); }
+    .form-row input[type="email"]:focus {
+      outline: none;
+      border-color: rgba(26,185,255,0.5);
+      box-shadow: 0 0 0 3px rgba(26,185,255,0.1);
+    }
+
+    .casl-check {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.78rem; color: var(--text-mid); line-height: 1.5;
+      cursor: pointer;
+    }
+    .casl-check input[type="checkbox"] {
+      margin-top: 3px; width: 14px; height: 14px;
+      accent-color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    footer {
+      position: relative; z-index: 1;
+      padding: 30px max(5vw, 24px);
+      border-top: 1px solid var(--border-dim);
+      text-align: center;
+    }
+    footer p { font-size: 0.72rem; color: var(--text-lo); }
+    footer p + p { margin-top: 4px; }
+
+    @media (max-width: 560px) {
+      .form-row { flex-direction: column; }
+      .form-row input[type="email"] { width: 100%; }
+      .form-row .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="Logo/CUEZR.png" alt="CUEZR" />
+      <span class="nav-brand">CUEZR<span>.</span></span>
+    </a>
+  </nav>
+
+  <main>
+    <div class="eyebrow">Download</div>
+    <h1>Get <span class="word">CUEZR</span>.</h1>
+    <p class="lede">
+      Real-time dual PowerPoint monitoring for live events. <strong>Free to use.</strong> Choose your path below — support development if it saves your show, or grab the build and try it risk-free.
+    </p>
+
+    <!-- ── Donate & Download ─────────────────────────────────────────── -->
+    <div class="card primary">
+      <div class="card-eyebrow">Support Development</div>
+      <h2>Donate &amp; Download</h2>
+      <p>
+        CUEZR is built and maintained by one person. If you're running real shows with it, consider chipping in what it's worth to you. Funding helps move new features forward.
+      </p>
+      <a href="https://donate.stripe.com/28E4gse69bUXf5J69r9Zm00" class="btn btn-primary">
+        Donate &amp; Download
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <div class="divider">Or</div>
+
+    <!-- ── Free Download (email capture) ─────────────────────────────── -->
+    <div class="card">
+      <div class="card-eyebrow muted">Free Download</div>
+      <h2>Download Without Donating</h2>
+      <p>
+        Just drop your email so we can let you know when new versions ship.
+      </p>
+      <form name="download-free" method="POST" data-netlify="true" action="/thanks-download.html" onsubmit="handleDownloadForm(event)">
+        <input type="hidden" name="form-name" value="download-free" />
+        <input type="hidden" name="consent" value="no" />
+        <div class="form-row">
+          <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" />
+          <button type="submit" class="btn btn-secondary">
+            Continue
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+        <label class="casl-check">
+          <input type="checkbox" id="free-consent" />
+          <span>I agree to receive release notes and product updates about CUEZR. You can unsubscribe at any time.</span>
+        </label>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Blink Multimedia. All rights reserved.</p>
+    <p>PowerPoint® is a registered trademark of Microsoft Corporation. OSC Point™ is a trademark of its respective owner. CUEZR is not affiliated with or endorsed by Microsoft Corporation or the makers of OSC Point.</p>
+  </footer>
+
+  <script>
+    function handleDownloadForm(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      // Replace the default "no" with "yes" if the user ticked the consent box
+      data.set('consent', document.getElementById('free-consent').checked ? 'yes' : 'no');
+      fetch('/', { method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data).toString()
+      }).finally(() => { window.location.href = '/thanks-download.html'; });
+    }
+  </script>
+</body>
+</html>

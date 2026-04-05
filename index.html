@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cuezr — Live Event Production Monitoring</title>
+  <title>CUEZR — Live Event Production Monitoring</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -68,6 +68,15 @@
       color: var(--text-hi);
     }
     .nav-brand span { color: var(--blue); }
+    .nav-right { display: flex; align-items: center; gap: 18px; }
+    .nav-link {
+      font-size: 0.82rem; font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--blue); }
     .nav-cta {
       display: inline-flex; align-items: center; gap: 7px;
       padding: 7px 16px;
@@ -183,6 +192,56 @@
     }
 
     /* Form */
+    /* ── Beta-ready CTA card (above signup) ───────────────────── */
+    .beta-cta {
+      display: flex; align-items: center; gap: 22px;
+      max-width: 560px;
+      background: linear-gradient(180deg, rgba(26,185,255,0.08), rgba(20,20,34,0.85) 70%);
+      border: 1px solid rgba(26,185,255,0.35);
+      border-radius: 14px;
+      padding: 22px 26px;
+      margin-bottom: 32px;
+      box-shadow: 0 0 0 1px rgba(26,185,255,0.12), 0 20px 44px -24px rgba(26,185,255,0.32);
+    }
+    .beta-cta-text { flex: 1; }
+    .beta-cta-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 5px;
+    }
+    .beta-cta-text h3 {
+      font-size: 1.08rem; font-weight: 800; color: #fff;
+      letter-spacing: -0.01em; margin-bottom: 4px; line-height: 1.3;
+    }
+    .beta-cta-text p {
+      font-size: 0.82rem; color: var(--text-mid);
+      line-height: 1.55; margin: 0;
+    }
+    .beta-cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      flex-shrink: 0;
+      padding: 13px 22px !important;
+      font-size: 0.88rem !important;
+    }
+    @media (max-width: 640px) {
+      .beta-cta { flex-direction: column; align-items: stretch; text-align: left; }
+      .beta-cta-btn { width: 100%; justify-content: center; }
+    }
+
+    /* Signup lead (above the newsletter form) */
+    .signup-lead { margin-bottom: 12px; }
+    .signup-lead-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-mid); margin-bottom: 4px;
+    }
+    .signup-lead p {
+      font-size: 0.85rem; color: var(--text-mid);
+      line-height: 1.55; margin: 0;
+    }
+
     .signup-wrap { max-width: 440px; }
     .signup-row {
       display: flex; gap: 9px; margin-bottom: 10px;
@@ -237,7 +296,7 @@
     .ty-msg svg { flex-shrink: 0; }
 
     /* ─────────────────────────────────────────────── */
-    /* APP MOCKUP — matches real Cuezr UI             */
+    /* APP MOCKUP — matches real CUEZR UI             */
     /* ─────────────────────────────────────────────── */
     .hero-mockup {
       position: relative;
@@ -644,10 +703,13 @@
     <img src="Logo/CUEZR_Logo.png" alt="" />
     <span class="nav-brand">CUEZR<span>.</span></span>
   </a>
-  <button class="nav-cta" onclick="scrollToHeroForm()">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-    Join Waitlist
-  </button>
+  <div class="nav-right">
+    <a href="support.html" class="nav-link">Support &amp; FAQ</a>
+    <a href="download.html" class="nav-cta" style="text-decoration:none;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Beta
+    </a>
+  </div>
 </nav>
 
 <!-- ── HERO ─────────────────────────────────────────────────── -->
@@ -657,21 +719,38 @@
 
       <!-- Copy -->
       <div class="hero-text">
-        <div class="hero-badge"><div class="live-dot"></div>Early Access</div>
-        <img src="Logo/CUEZR_Logo.png" alt="Cuezr" class="hero-logo-img" />
+        <div class="hero-badge"><div class="live-dot"></div>Beta Available</div>
+        <img src="Logo/CUEZR_Logo.png" alt="CUEZR" class="hero-logo-img" />
         <h1 class="hero-title"><span class="word">CUEZR</span><br />The Powerpoint tracker<br />for LIVE Events.</h1>
         <p class="hero-sub">A visualizer for Powerpoint® using OSC Point — with real-time slide counts, video countouts, sync confirmation and a display deisgned for multiview.</p>
 
+        <!-- ── Beta Ready CTA ─────────────────────────────────────── -->
+        <div class="beta-cta">
+          <div class="beta-cta-text">
+            <div class="beta-cta-eyebrow">Beta is live</div>
+            <h3>CUEZR Beta is ready for your next event.</h3>
+            <p>Mac and Windows builds are available now. Free to use — support development if it saves your show.</p>
+          </div>
+          <a href="download.html" class="btn beta-cta-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Beta
+          </a>
+        </div>
+
         <div class="signup-wrap" id="hero-form-wrap">
+          <div class="signup-lead">
+            <div class="signup-lead-eyebrow">Stay in the loop</div>
+            <p>Subscribe for release notes and new feature updates as they ship.</p>
+          </div>
           <form name="waitlist-hero" data-netlify="true" onsubmit="handleSignup(event)">
             <input type="hidden" name="form-name" value="waitlist-hero" />
             <div class="signup-row">
               <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" />
-              <button type="submit" class="btn" id="hero-submit" disabled>Join the Waitlist</button>
+              <button type="submit" class="btn" id="hero-submit" disabled>Subscribe</button>
             </div>
             <label class="casl-check">
               <input type="checkbox" name="consent" required onchange="document.getElementById('hero-submit').disabled=!this.checked" />
-              <span>I agree to receive email updates about Cuezr's launch and beta access. You can unsubscribe at any time.</span>
+              <span>I agree to receive release notes and product updates about CUEZR. You can unsubscribe at any time.</span>
             </label>
           </form>
         </div>
@@ -865,7 +944,7 @@
         <div class="step-content">
           <div class="step-tag blue">OSC Point + StreamDeck</div>
           <div class="step-title">Connect</div>
-          <p class="step-desc">Cuezr integrates with OSC Point so operators keep their existing StreamDeck workflow untouched. Point Cuezr to your OSC Point machines and Cuezr does the rest.</p>
+          <p class="step-desc">CUEZR integrates with OSC Point so operators keep their existing StreamDeck workflow untouched. Point CUEZR to your OSC Point machines and CUEZR does the rest.</p>
         </div>
       </div>
 
@@ -876,7 +955,7 @@
         <div class="step-content">
           <div class="step-tag orange">Multiview · Operator Screen</div>
           <div class="step-title">Monitor</div>
-          <p class="step-desc">Send the Cuezr window directly into your switcher multiview or park it on a dedicated screen. Your whole crew sees slide and video state in real time.</p>
+          <p class="step-desc">Send the CUEZR window directly into your switcher multiview or park it on a dedicated screen. Your whole crew sees slide and video state in real time.</p>
         </div>
       </div>
 
@@ -903,7 +982,7 @@
 
       <div class="foot-brand">
         <div class="foot-brand-name">
-          <img src="Logo/CUEZR_Logo.png" alt="Cuezr" />
+          <img src="Logo/CUEZR_Logo.png" alt="CUEZR" />
           <span>CUEZR<em>.</em></span>
         </div>
         <p>Live event production monitoring for main and backup systems. Built on OSC Point. Designed for the crew that can't afford to miss a cue.</p>
@@ -921,25 +1000,25 @@
       </div>
 
       <div class="foot-signup">
-        <h3>Be first in line when we launch.</h3>
-        <p>Early access goes to the waitlist first.</p>
+        <h3>Stay in the loop.</h3>
+        <p>Subscribe for release notes and new feature updates as they ship.</p>
         <form name="waitlist-footer" data-netlify="true" onsubmit="handleSignup(event)">
           <input type="hidden" name="form-name" value="waitlist-footer" />
           <div class="signup-row">
             <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" />
-            <button type="submit" class="btn" id="footer-submit" disabled>Join Waitlist</button>
+            <button type="submit" class="btn" id="footer-submit" disabled>Subscribe</button>
           </div>
           <label class="casl-check">
             <input type="checkbox" name="consent" required onchange="document.getElementById('footer-submit').disabled=!this.checked" />
-            <span>I agree to receive email updates about Cuezr's launch and beta access. You can unsubscribe at any time.</span>
+            <span>I agree to receive release notes and product updates about CUEZR. You can unsubscribe at any time.</span>
           </label>
         </form>
       </div>
 
     </div>
     <div class="foot-bottom">
-      <p>© 2025 Blink Multimedia. All rights reserved.</p>
-      <p class="trademark">PowerPoint® is a registered trademark of Microsoft Corporation. OSC Point™ is a trademark of its respective owner. Cuezr is not affiliated with or endorsed by Microsoft Corporation or the makers of OSC Point.</p>
+      <p>© 2026 Blink Multimedia. All rights reserved.</p>
+      <p class="trademark">PowerPoint® is a registered trademark of Microsoft Corporation. OSC Point™ is a trademark of its respective owner. CUEZR is not affiliated with or endorsed by Microsoft Corporation or the makers of OSC Point.</p>
       <div class="foot-sys"><span class="dot"></span>SYSTEMS NOMINAL</div>
     </div>
   </div>
