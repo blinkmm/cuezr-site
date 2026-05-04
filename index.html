@@ -1066,7 +1066,7 @@
     const data = new FormData(form);
     fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(data).toString() })
-      .finally(() => { window.location.href = '/thank-you'; });
+      .finally(() => { window.location.href = '/thank-you.html'; });
   }
 
   function scrollToHeroForm() {

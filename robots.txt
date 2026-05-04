@@ -1,7 +1,4 @@
 User-agent: *
-Disallow: /thank-you.html
-Disallow: /thanks-donor.html
-Disallow: /thanks-download.html
 Disallow: /promo-facebook.html
 Disallow: /download-stats.csv
 
