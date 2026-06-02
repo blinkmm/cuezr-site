@@ -597,7 +597,7 @@
         <details>
           <summary>My Mac says "CUEZR can't be opened because Apple cannot check it for malicious software"</summary>
           <div class="answer">
-            <p>CUEZR for Mac is signed with an Apple Developer ID but the beta builds are not yet notarized. On first launch, <strong>right-click (or Control-click) the app and choose Open</strong> instead of double-clicking. macOS will then let you confirm the exception once, and from then on you can launch it normally.</p>
+            <p>Current CUEZR builds (<strong>v0.9.2 and later</strong>) are signed with an Apple Developer ID <strong>and notarized by Apple</strong>, so they open normally — just double-click to launch. If you see this message, you're likely on an older beta (v0.9.1) that wasn't notarized: either <a href="download.html">download the latest version</a>, or <strong>right-click (or Control-click) the app and choose Open</strong> once to launch the older build.</p>
           </div>
         </details>
 
@@ -619,13 +619,6 @@
           <summary>Does CUEZR send my data anywhere?</summary>
           <div class="answer">
             <p>No. CUEZR runs entirely on your local network. There's no cloud, no telemetry, no account — it just listens for OSC on the ports you configure and displays what it receives. The only outbound network traffic is the keepalive and refresh commands it sends back to your OSC Point machines.</p>
-          </div>
-        </details>
-
-        <details>
-          <summary>Is CUEZR really free?</summary>
-          <div class="answer">
-            <p>Yes. CUEZR is free to download and use, for personal or commercial productions. If it proves itself on a real gig, <a href="download.html">consider supporting development</a> — funding helps move new features forward.</p>
           </div>
         </details>
 
@@ -655,7 +648,52 @@
       </div>
     </div>
 
+    <!-- Feedback -->
+    <style>
+      .feedback-box{max-width:760px;margin:52px auto 0;background:var(--card);border:1px solid var(--border);border-radius:var(--rlg);padding:34px 32px;}
+      .feedback-box h2{font-size:1.4rem;color:var(--text-hi);margin:6px 0 8px;}
+      .fb-lead{font-size:.92rem;color:var(--text-mid);margin-bottom:22px;line-height:1.55;}
+      .fb-form{display:flex;flex-direction:column;gap:14px;}
+      .fb-row{display:flex;gap:14px;flex-wrap:wrap;}
+      .fb-row input{flex:1 1 200px;}
+      .fb-form input,.fb-form textarea{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;color:var(--text-hi);font-family:inherit;font-size:.92rem;width:100%;box-sizing:border-box;}
+      .fb-form input::placeholder,.fb-form textarea::placeholder{color:var(--text-lo);}
+      .fb-form input:focus,.fb-form textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-dim);}
+      .fb-form textarea{resize:vertical;min-height:120px;}
+      .fb-submit{align-self:flex-start;background:var(--blue);color:#04121b;border:none;border-radius:var(--r);padding:12px 24px;font-family:inherit;font-weight:700;font-size:.92rem;cursor:pointer;transition:opacity .15s,transform .15s;}
+      .fb-submit:hover{opacity:.92;transform:translateY(-1px);}
+      .fb-note{font-size:.8rem;color:var(--text-lo);margin-top:4px;}
+    </style>
+    <div class="feedback-box" id="feedback">
+      <div class="section-eyebrow">Feedback</div>
+      <h2>Send us feedback</h2>
+      <p class="fb-lead">Found a bug, hit a snag, or have an idea that would make CUEZR better on show day? Tell us — it goes straight to the team.</p>
+      <form name="feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleFeedback(event)" class="fb-form">
+        <input type="hidden" name="form-name" value="feedback" />
+        <input type="hidden" name="subject" value="CUEZR Feedback" />
+        <p hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
+        <div class="fb-row">
+          <input type="text" name="name" placeholder="Name (optional)" autocomplete="name" />
+          <input type="email" name="email" placeholder="Email (optional — if you'd like a reply)" autocomplete="email" />
+        </div>
+        <textarea name="message" rows="5" placeholder="What's on your mind? Bugs, feature requests, what worked, what didn't…" required></textarea>
+        <button type="submit" class="fb-submit">Send Feedback</button>
+        <p class="fb-note">Your feedback goes to the CUEZR team. We only use your email to reply.</p>
+      </form>
+    </div>
+
   </main>
+
+  <script>
+    function handleFeedback(e){
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data).toString() })
+        .finally(() => { window.location.href = '/thank-you.html'; });
+    }
+  </script>
 
   <footer>
     <p>© 2026 Blink Multimedia. All rights reserved.</p>
