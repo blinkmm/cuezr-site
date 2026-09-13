@@ -1,0 +1,9 @@
+{
+  "name": "cuezr-site",
+  "version": "1.0.0",
+  "dependencies": {
+    "node-ical": "^0.27.1"
+  },
+  "type": "module",
+  "private": true
+}
