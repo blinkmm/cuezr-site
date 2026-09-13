@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<title>Blink Multimedia Availability</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --base:#0F1214; --panel:#171B1E; --raised:#1E2327; --line:#2B3136;
+  --text:#E4E7E9; --dim:#828B92; --faint:#4E565C;
+  --local:#3E8E6E; --travel:#C07C33; --tent:#6E6A7D;
+  --pick:#3D82C9; --pick-text:#FFFFFF;
+  --cell:30px; --navh:96px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}}
+body{
+  background:var(--base); color:var(--text);
+  font:400 16px/1.5 Archivo,system-ui,sans-serif;
+  font-variant-numeric:tabular-nums;
+  padding:22px 14px 140px; max-width:1080px; margin:0 auto;
+}
+h1{font-size:1.5rem;font-weight:600;letter-spacing:-.01em}
+h2{font-size:1rem;font-weight:600;margin-bottom:12px}
+.lede{color:var(--dim);max-width:60ch;margin-top:8px;font-size:.95rem}
+header{padding-bottom:18px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;font-size:.82rem;color:var(--dim)}
+.legend span{display:flex;align-items:center;gap:7px}
+.sw{height:10px;border-radius:2px;flex:none}
+.sw.free{width:10px;background:var(--raised);border:1px solid var(--line)}
+.sw.local{width:16px;background:var(--local)}
+.sw.travel{width:16px;background:var(--travel)}
+.sw.tent{width:16px;background:var(--tent)}
+
+/* ---- sticky navigation ---- */
+.nav{
+  position:sticky;top:0;z-index:5;background:var(--base);
+  border-bottom:1px solid var(--line);padding:10px 0 8px;margin-bottom:20px;
+}
+.years{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;
+  scrollbar-width:none;padding-bottom:2px;scroll-snap-type:x proximity}
+.years::-webkit-scrollbar{display:none}
+.yr{
+  background:none;border:1px solid var(--line);color:var(--dim);border-radius:4px;
+  padding:6px 14px;font:500 .85rem Archivo,sans-serif;cursor:pointer;
+  flex:none;scroll-snap-align:start;
+}
+.yr[aria-current="true"]{background:var(--raised);border-color:var(--text);color:var(--text)}
+.strip{
+  display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;
+  padding-bottom:4px;scroll-snap-type:x proximity;
+}
+.strip::-webkit-scrollbar{display:none}
+.mo{
+  flex:none;min-width:52px;background:none;border:1px solid var(--line);
+  border-radius:4px;padding:8px 10px;cursor:pointer;scroll-snap-align:start;
+  font:400 .8rem Archivo,sans-serif;color:var(--dim);
+}
+.mo[aria-current="true"]{border-color:var(--text);background:var(--raised);color:var(--text)}
+
+/* ---- month grids ---- */
+.months{display:grid;grid-template-columns:1fr;gap:18px}
+.month{background:var(--panel);border:1px solid var(--line);border-radius:6px;
+  padding:12px 10px;scroll-margin-top:var(--navh)}
+/* Which month am I looking at? In a three-column grid the card you jumped to
+   can sit in any column, so the nav chip alone doesn't answer that. Drawn with
+   box-shadow rather than a thicker border so nothing reflows. */
+.month.current{border-color:var(--text);box-shadow:0 0 0 1px var(--text)}
+.month h3{font-size:.9rem;font-weight:600;margin:0 0 10px 2px}
+.month h3 small{color:var(--dim);font-weight:400}
+.dow{display:grid;grid-template-columns:repeat(7,1fr)}
+.dow div{text-align:center;font-size:.7rem;color:var(--faint);padding-bottom:6px}
+.days{display:grid;grid-template-columns:repeat(7,1fr)}
+.day{
+  aspect-ratio:1;min-height:var(--cell);border:0;background:none;
+  font:inherit;font-size:.78rem;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;font-variant-numeric:tabular-nums;position:relative;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+.day.blank,.day.past,.day.booked{cursor:default}
+.day.booked::before{content:"";position:absolute;inset:2px 0;z-index:0}
+.day.booked.local::before{background:var(--local)}
+.day.booked.travel::before{background:var(--travel)}
+.day.booked.b-start::before{inset:2px 0 2px 3px;border-radius:3px 0 0 3px}
+.day.booked.b-end::before{inset:2px 3px 2px 0;border-radius:0 3px 3px 0}
+.day.booked.b-start.b-end::before{inset:2px 3px;border-radius:3px}
+.day.booked .n{color:#FFFFFF;font-weight:500}
+.day.past.booked .n{color:rgba(255,255,255,.7)}
+.day.past.booked::before{opacity:.5}
+.day .n{position:relative;z-index:1;color:var(--text)}
+.day.past .n{color:var(--faint)}
+.day.dim .n{opacity:.4}
+@media (hover:hover){
+  .day.free:hover::before{content:"";position:absolute;inset:2px;z-index:0;
+    border-radius:3px;background:var(--raised)}
+}
+/* A hold looks like a booking but stays tappable — the whole point is that a
+   firm request can bump a soft one. Muted so it never competes with confirmed
+   work for attention. */
+.day.hold::before{content:"";position:absolute;inset:2px 0;z-index:0;
+  background:var(--tent);opacity:.75}
+.day.hold.b-start::before{inset:2px 0 2px 3px;border-radius:3px 0 0 3px}
+.day.hold.b-end::before{inset:2px 3px 2px 0;border-radius:0 3px 3px 0}
+.day.hold.b-start.b-end::before{inset:2px 3px;border-radius:3px}
+.day.hold .n{color:#FFFFFF;font-weight:500}
+.day.hold.past::before{opacity:.35}
+
+.day.sel::before{content:"";position:absolute;inset:2px 0;z-index:0;
+  background:var(--pick);border-radius:0}
+.day.sel::before{background:var(--pick);opacity:1}
+.day.sel .n{color:var(--pick-text);font-weight:600}
+.day.sel.sel-a::before{inset:2px 0 2px 2px;border-radius:3px 0 0 3px}
+.day.sel.sel-b::before{inset:2px 2px 2px 0;border-radius:0 3px 3px 0}
+.day.sel.sel-a.sel-b::before{inset:2px;border-radius:3px}
+.yr:focus-visible,.mo:focus-visible,.btn:focus-visible,
+input:focus-visible,textarea:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.day:focus-visible{outline:2px solid var(--text);outline-offset:-2px;border-radius:3px}
+
+/* ---- tray ---- */
+.tray{position:fixed;left:0;right:0;bottom:0;background:var(--panel);
+  border-top:1px solid var(--line);padding:14px 20px;display:none;
+  gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;z-index:6}
+.tray.on{display:flex}
+.tray-count{font-size:.9rem}
+.tray-count b{font-weight:600}
+.tray-dates{color:var(--dim);font-size:.78rem;display:block;margin-top:3px;
+  max-width:48ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{background:var(--pick);color:var(--pick-text);border:0;border-radius:4px;
+  padding:10px 18px;font:500 .9rem Archivo,sans-serif;cursor:pointer}
+.btn.ghost{background:none;color:var(--dim);border:1px solid var(--line)}
+
+/* ---- request sheet ---- */
+.sheet{position:fixed;inset:0;background:rgba(8,10,12,.78);display:none;
+  align-items:center;justify-content:center;padding:20px;z-index:10}
+.sheet.on{display:flex}
+.sheet-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:24px;width:100%;max-width:440px;max-height:88vh;overflow:auto}
+label{display:block;font-size:.8rem;color:var(--dim);margin:16px 0 6px}
+input[type=text],input[type=email],textarea{width:100%;background:var(--base);
+  border:1px solid var(--line);border-radius:4px;color:var(--text);font:inherit;
+  font-size:.9rem;padding:10px 12px}
+textarea{resize:vertical;min-height:70px}
+label .opt{color:var(--faint);font-weight:400;text-transform:none}
+/* Dates are chosen on the calendar, so they are shown, not typed. A readonly
+   textarea still shows a caret and a resize grip and reads as editable. */
+/* Inputs are inset and darker than the card; this sits raised and borderless,
+   so it reads as a value already decided rather than a box to type in. */
+.readout{background:var(--raised);border:0;border-radius:4px;
+  padding:11px 12px;font-size:.9rem;color:var(--text);line-height:1.4}
+.readout b{font-weight:600}
+.sheet-actions{display:flex;gap:10px;margin-top:22px}
+.sheet-actions .btn{flex:1}
+.note{font-size:.78rem;color:var(--dim);margin-top:14px;line-height:1.45}
+.status{font-size:.85rem;margin-top:14px}
+.status.err{color:var(--travel)}
+.hidden{display:none}
+.loading{color:var(--dim);padding:40px 0;text-align:center;font-size:.9rem}
+.hint{font-size:.78rem;color:var(--faint);margin:-8px 0 16px}
+
+@media (min-width:700px){.months{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:980px){.months{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Blink Multimedia availability</h1>
+  <p class="lede">Booked dates are shown on the calendar. Choose any available
+     dates and send them my way—I’ll confirm by email before your booking is
+     secured.</p>
+  <p class="lede">Dates in grey are currently being held for someone else, but
+     please feel free to ask about them. I can check whether the dates can be
+     released for you, or they might already be your dates!</p>
+  <div class="legend">
+    <span><i class="sw free"></i>Open</span>
+    <span><i class="sw local"></i>Booked — local</span>
+    <span><i class="sw travel"></i>Booked — away</span>
+    <span><i class="sw tent"></i>On hold — ask anyway</span>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Jump to month">
+  <div class="years" id="years" role="group" aria-label="Year"></div>
+  <div class="strip" id="strip" role="group" aria-label="Month"></div>
+</nav>
+
+<p class="hint" id="hint">Tap your first open day, then the last one.</p>
+
+<div class="loading" id="loading">Loading calendar…</div>
+<p class="hint" id="fresh" style="margin:-8px 0 16px"></p>
+<section class="months" id="months" aria-label="Availability by month"></section>
+
+<footer style="color:var(--faint);font-size:.8rem;margin:28px 0 8px">
+  Something the calendar doesn't cover?
+  <a href="mailto:bookings@cuezr.com" style="color:var(--dim)">bookings@cuezr.com</a>
+</footer>
+
+<div class="tray" id="tray" role="region" aria-label="Selected dates">
+  <div class="tray-count">
+    <b id="count">0 dates</b>
+    <span class="tray-dates" id="picked"></span>
+  </div>
+  <div style="display:flex;gap:10px">
+    <button class="btn ghost" id="clear">Clear</button>
+    <button class="btn" id="open">Request these dates</button>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Request dates">
+  <div class="sheet-card">
+    <h2>Request a hold</h2>
+    <form name="date-hold" method="POST" data-netlify="true" netlify-honeypot="hp-ref" id="form">
+      <input type="hidden" name="form-name" value="date-hold">
+      <input type="hidden" name="subject" id="subj" value="Blink Date Request">
+      <!-- Honeypot. Named so neither a browser nor a password manager
+           recognises it as a real field worth autofilling. -->
+      <p class="hidden"><label>Leave blank<input name="hp-ref" tabindex="-1"
+        autocomplete="off"></label></p>
+
+      <label for="nm">Your name</label>
+      <input type="text" id="nm" name="name" required autocomplete="name">
+
+      <label for="co">Company <span class="opt">— optional</span></label>
+      <input type="text" id="co" name="company" autocomplete="organization">
+
+      <label for="em">Email</label>
+      <input type="email" id="em" name="email" required autocomplete="email">
+
+      <span class="label-as-text" id="dtlabel"
+        style="display:block;font-size:.8rem;color:var(--dim);margin:16px 0 6px"
+        >Dates requested</span>
+      <div class="readout" id="dt" role="group" aria-labelledby="dtlabel"></div>
+      <input type="hidden" name="dates" id="dtvalue">
+
+      <label for="nt">About the show <span class="opt">— optional</span></label>
+      <textarea id="nt" name="notes" placeholder="Venue, city, rough scope — anything that helps me answer quickly."></textarea>
+      <p class="note" id="holdnote" style="display:none;color:var(--tent)"></p>
+      <p class="note">Sending this doesn't reserve anything. I'll reply to confirm
+         whether the dates are still open.</p>
+      <div class="status" id="status"></div>
+      <div class="sheet-actions">
+        <button type="button" class="btn ghost" id="cancel">Cancel</button>
+        <button type="submit" class="btn" id="send">Send request</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const MONTHS=["January","February","March","April","May","June","July",
+  "August","September","October","November","December"];
+const ABBR=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DOW=["S","M","T","W","T","F","S"];
+const DOWFULL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MONTH_COUNT=36;
+/* Change here and in the footer link below if the alias ever moves. */
+const EMAIL="bookings@cuezr.com";
+const mailto=t=>`<a href="mailto:${EMAIL}">${t||EMAIL}</a>`;
+
+let busy={}, spans=[], band={}, todayKey="", startDate=null;
+
+/** Per-day band info so each cell draws its own segment: no floating layer to
+ *  fall out of step with the numbers sitting on top of it. */
+function buildBands(){
+  band={};
+  for(const sp of spans){
+    for(let k=sp.from;k<=sp.to;k=shift(k,1)){
+      band[k]={type:sp.type,start:k===sp.from,end:k===sp.to};
+    }
+  }
+}
+const cells=new Map();
+const HINT="Tap your first open day, then the last one.";
+
+const key=(y,m,d)=>`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+const pretty=k=>{const[y,m,d]=k.split("-").map(Number);
+  return `${ABBR[m-1]} ${d}, ${y}`;};
+const shift=(k,n)=>{const[y,m,d]=k.split("-").map(Number);
+  const t=new Date(Date.UTC(y,m-1,d,12)+n*86400000);
+  return `${t.getUTCFullYear()}-${String(t.getUTCMonth()+1).padStart(2,"0")}-${String(t.getUTCDate()).padStart(2,"0")}`;};
+
+/* ---------- navigation ---------- */
+let navYears=[], activeYear=null;
+
+function monthsInYear(y){
+  const out=[];
+  for(let i=0;i<MONTH_COUNT;i++){
+    const dt=new Date(startDate.getFullYear(),startDate.getMonth()+i,1);
+    if(dt.getFullYear()===y) out.push(dt.getMonth());
+  }
+  return out;
+}
+
+function renderStrip(y){
+  activeYear=y;
+  const strip=document.getElementById("strip");
+  strip.innerHTML="";
+  for(const m of monthsInYear(y)){
+    const b=document.createElement("button");
+    b.type="button"; b.className="mo";
+    b.dataset.year=y; b.dataset.month=m; b.textContent=ABBR[m];
+    b.setAttribute("aria-label",`${MONTHS[m]} ${y}`);
+    b.onclick=()=>jumpTo(`m-${y}-${m}`,y,m);
+    strip.appendChild(b);
+  }
+  document.querySelectorAll(".yr").forEach(b=>
+    b.setAttribute("aria-current",+b.dataset.year===y?"true":"false"));
+}
+
+function buildNav(){
+  const years=document.getElementById("years");
+  navYears=[];
+  for(let i=0;i<MONTH_COUNT;i++){
+    const y=new Date(startDate.getFullYear(),startDate.getMonth()+i,1).getFullYear();
+    if(!navYears.includes(y)) navYears.push(y);
+  }
+  navYears.forEach(y=>{
+    const b=document.createElement("button");
+    b.type="button"; b.className="yr"; b.textContent=y; b.dataset.year=y;
+    b.onclick=()=>{
+      renderStrip(y);
+      const first=monthsInYear(y)[0];
+      jumpTo(`m-${y}-${first}`,y,first);
+    };
+    years.appendChild(b);
+  });
+  renderStrip(navYears[0]);
+}
+
+function markActive(y,m){
+  if(y!==activeYear) renderStrip(y);
+  document.querySelectorAll(".month").forEach(el=>{
+    el.classList.toggle("current",
+      +el.dataset.year===y && +el.dataset.month===m);
+  });
+  const strip=document.getElementById("strip");
+  document.querySelectorAll(".mo").forEach(b=>{
+    const on=+b.dataset.year===y&&+b.dataset.month===m;
+    b.setAttribute("aria-current",on?"true":"false");
+    // Horizontal only, on the strip itself. scrollIntoView here would scroll
+    // the page as well and interrupt a jump that is still animating.
+    if(on){
+      const target=b.offsetLeft-(strip.clientWidth-b.offsetWidth)/2;
+      strip.scrollTo({left:Math.max(0,target),behavior:"auto"});
+    }
+  });
+}
+
+/* While a nav jump is in flight the scroll-spy must stay quiet: every month
+   flying past would otherwise rebuild the strip and fight the scroll. */
+let navLock=false, navTimer=null;
+function jumpTo(id,y,m){
+  navLock=true; clearTimeout(navTimer);
+  navTimer=setTimeout(()=>{navLock=false;},1600);
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({block:"start"});
+  if(y!==undefined) markActive(y,m);
+}
+addEventListener("scrollend",()=>{clearTimeout(navTimer);navLock=false;},{passive:true});
+
+/* ---------- month grids ---------- */
+function buildMonths(){
+  const wrap=document.getElementById("months"); wrap.innerHTML="";
+  for(let i=0;i<MONTH_COUNT;i++){
+    const dt=new Date(startDate.getFullYear(),startDate.getMonth()+i,1);
+    const y=dt.getFullYear(), m=dt.getMonth();
+    const total=new Date(y,m+1,0).getDate(), lead=new Date(y,m,1).getDay();
+    let open=0;
+    for(let d=1;d<=total;d++){const k=key(y,m,d); if(!busy[k]&&k>=todayKey) open++;}
+
+    const card=document.createElement("section");
+    card.className="month"; card.id=`m-${y}-${m}`;
+    card.dataset.year=y; card.dataset.month=m;
+    const h=document.createElement("h3");
+    h.innerHTML=`${MONTHS[m]} ${y} <small>· ${open} open</small>`;
+    const dow=document.createElement("div"); dow.className="dow";
+    DOW.forEach((x,ix)=>{const e=document.createElement("div");
+      e.textContent=x; e.setAttribute("aria-label",DOWFULL[ix]); dow.appendChild(e);});
+    card.append(h,dow);
+
+    const slots=[];
+    for(let b=0;b<lead;b++) slots.push(null);
+    for(let d=1;d<=total;d++) slots.push(key(y,m,d));
+    while(slots.length%7) slots.push(null);
+
+    for(let w=0;w<slots.length/7;w++){
+      const row=slots.slice(w*7,w*7+7);
+      const days=document.createElement("div"); days.className="days";
+      row.forEach(k=>{
+        const cell=document.createElement("button"); cell.type="button";
+        if(!k){cell.className="day blank";cell.disabled=true;days.appendChild(cell);return;}
+        const d=Number(k.split("-")[2]), info=band[k];
+        cell.innerHTML=`<span class="n">${d}</span>`; cell.dataset.key=k;
+        const past=k<todayKey;
+        const edges=info?((info.start?" b-start":"")+(info.end?" b-end":"")):"";
+        if(info&&info.type==="tentative"&&!past){
+          // A hold is exactly the thing a client should be able to ask about,
+          // so it renders as a booking but stays tappable.
+          cell.className="day hold"+edges;
+          cell.dataset.hold="1";
+          cell.setAttribute("aria-pressed","false");
+          cell.setAttribute("aria-label",
+            pretty(k)+", on hold for someone else, can still be requested");
+          cells.set(k,cell);
+        } else if(info){
+          cell.className="day "+
+            (info.type==="tentative"?"hold":"booked "+info.type)+
+            (past?" past":"")+edges;
+          cell.disabled=true;
+          cell.setAttribute("aria-label",pretty(k)+", "+
+            (info.type==="tentative"
+              ? "on hold"
+              : "booked, "+(info.type==="travel"?"away":"local")));
+        } else if(past){
+          cell.className="day past"; cell.disabled=true;
+          cell.setAttribute("aria-label",pretty(k)+", past");
+        } else {
+          cell.className="day free"; cell.setAttribute("aria-pressed","false");
+          cell.setAttribute("aria-label",pretty(k)+", open");
+          cells.set(k,cell);
+        }
+        days.appendChild(cell);
+      });
+      card.appendChild(days);
+    }
+    wrap.appendChild(card);
+  }
+}
+
+/* ---------- selection: pick a start, then an end ---------- */
+let rangeA=null, rangeB=null, limit=null, pickedLabel="";
+
+/** Furthest open day reachable from `from` before a booking blocks the way. */
+function reachableTo(from){
+  let k=from, last=from, guard=0;
+  while(guard++<400){
+    const next=shift(k,1);
+    if(!cells.has(next)) break;
+    last=next; k=next;
+  }
+  return last;
+}
+
+function paint(){
+  cells.forEach((cell,k)=>{
+    cell.classList.remove("sel","sel-a","sel-b","dim");
+    cell.setAttribute("aria-pressed","false");
+  });
+  if(!rangeA) return;
+  // While an end is still pending, fade what this range can't reach. Those days
+  // stay tappable — tapping one just starts a fresh range there.
+  if(!rangeB){
+    cells.forEach((cell,k)=>{ if(k<rangeA||k>limit) cell.classList.add("dim"); });
+  }
+  const a=rangeA, b=rangeB||rangeA;
+  for(let k=a;k<=b;k=shift(k,1)){
+    const cell=cells.get(k); if(!cell) continue;
+    cell.classList.add("sel");
+    if(k===a) cell.classList.add("sel-a");
+    if(k===b) cell.classList.add("sel-b");
+    cell.setAttribute("aria-pressed","true");
+  }
+}
+
+function choose(k){
+  const extending = rangeA && !rangeB && k>rangeA && k<=limit;
+  if(extending) rangeB=k;
+  else { rangeA=k; rangeB=null; limit=reachableTo(k); }
+  paint(); syncTray();
+}
+
+document.getElementById("months").addEventListener("click",e=>{
+  const c=e.target.closest(".day.free,.day.hold");
+  if(c&&cells.has(c.dataset.key)) choose(c.dataset.key);
+});
+
+function syncTray(){
+  const on=!!rangeA;
+  document.getElementById("tray").classList.toggle("on",on);
+  const hint=document.getElementById("hint");
+  if(!on){ hint.textContent=HINT; return; }
+  const a=rangeA, b=rangeB||rangeA;
+  let n=0, holds=0;
+  for(let k=a;k<=b;k=shift(k,1)){ n++; if(band[k]&&band[k].type==="tentative") holds++; }
+  document.getElementById("count").textContent=n===1?"1 date":`${n} dates`;
+  document.getElementById("picked").textContent=
+    (n===1?pretty(a):`${pretty(a)} – ${pretty(b)}`)+
+    (holds?`  ·  ${holds} on hold`:"");
+  const span=n===1?pretty(a):`${pretty(a)} – ${pretty(b)} (${n} days)`;
+  pickedLabel=n===1?pretty(a):`${pretty(a)} – ${pretty(b)}`;
+  document.getElementById("dt").innerHTML=`<b>${span}</b>`;
+  // The hold count rides along in the posted value, so it reaches the email.
+  document.getElementById("dtvalue").value=
+    span+(holds?`  [${holds} of these ${holds===1?"is":"are"} currently on hold]`:"");
+  const hn=document.getElementById("holdnote");
+  hn.style.display=holds?"block":"none";
+  hn.textContent=holds
+    ? `${holds===1?"One of these dates is":`${holds} of these dates are`} `+
+      `pencilled in for someone else. Ask anyway — a confirmed booking takes `+
+      `precedence over a hold, and I'll tell you where it stands.`
+    : "";
+  hint.textContent=rangeB
+    ? "Tap any open day to start again."
+    : (limit===rangeA
+        ? "Bookings sit either side, so this day stands alone. Send it, or tap elsewhere."
+        : `Now tap the last day — up to ${pretty(limit)}. Or send just this one.`);
+}
+
+document.getElementById("clear").onclick=()=>{
+  rangeA=rangeB=limit=null; paint();
+  document.getElementById("tray").classList.remove("on");
+  document.getElementById("hint").textContent=HINT;
+};
+const sheet=document.getElementById("sheet");
+document.getElementById("open").onclick=()=>{sheet.classList.add("on");
+  document.getElementById("nm").focus();};
+document.getElementById("cancel").onclick=()=>sheet.classList.remove("on");
+sheet.onclick=e=>{if(e.target===sheet)sheet.classList.remove("on");};
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&sheet.classList.contains("on"))sheet.classList.remove("on");});
+
+document.getElementById("form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const status=document.getElementById("status"), send=document.getElementById("send");
+  status.className="status"; status.textContent="Sending…"; send.disabled=true;
+  // Subject carries who and when, so the inbox is scannable without opening it.
+  const nm=document.getElementById("nm").value.trim();
+  const co=document.getElementById("co").value.trim();
+  document.getElementById("subj").value=
+    `Blink Date Request — ${co?`${nm}, ${co}`:nm} — ${pickedLabel}`;
+  try{
+    const body=new URLSearchParams(new FormData(e.target)).toString();
+    const r=await fetch("/",{method:"POST",
+      headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
+    if(!r.ok) throw new Error(r.status);
+    document.querySelector(".sheet-card").innerHTML=
+      `<h2>Request sent</h2><p class="note" style="font-size:.9rem">
+       I'll reply to confirm which of these dates are still open.
+       Nothing is held until then. Anything to add, reach me at ${mailto()}.</p>
+       <div class="sheet-actions"><button class="btn" onclick="location.reload()">Done</button></div>`;
+  }catch(err){
+    status.className="status err";
+    status.innerHTML="That didn't send. Try again, or email "+mailto()+" directly.";
+    send.disabled=false;
+  }
+});
+
+/* ---------- init ---------- */
+(async function init(){
+  const now=new Date();
+  todayKey=key(now.getFullYear(),now.getMonth(),now.getDate());
+  startDate=new Date(now.getFullYear(),now.getMonth(),1);
+  try{
+    const r=await fetch("/api/availability");
+    if(!r.ok) throw new Error(r.status);
+    const data=await r.json();
+    busy=data.days||{}; spans=data.spans||[]; buildBands();
+    document.getElementById("loading").remove();
+    if(data.generatedAt){
+      const t=new Date(data.generatedAt);
+      document.getElementById("fresh").textContent=
+        "Read from my calendar at "+t.toLocaleTimeString([],
+          {hour:"numeric",minute:"2-digit"})+" today.";
+    }
+  }catch(err){
+    document.getElementById("loading").innerHTML=
+      "Couldn't load the calendar right now — email "+mailto()+
+      " and I'll send my availability over.";
+    document.getElementById("hint").remove();
+    return;
+  }
+  buildNav(); buildMonths();
+
+  const io=new IntersectionObserver(entries=>{
+    if(navLock) return;
+    const vis=entries.filter(e=>e.isIntersecting)
+      .sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if(vis) markActive(+vis.target.dataset.year,+vis.target.dataset.month);
+  },{rootMargin:`-${parseInt(getComputedStyle(document.documentElement)
+      .getPropertyValue("--navh"))}px 0px -60% 0px`});
+  document.querySelectorAll(".month").forEach(el=>io.observe(el));
+  markActive(startDate.getFullYear(),startDate.getMonth());
+})();
+</script>
+</body>
+</html>
