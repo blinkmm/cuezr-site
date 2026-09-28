@@ -1,7 +1,9 @@
 export default async (req) => {
   const { payload } = await req.json();
 
-  if (!payload?.data?.email || payload.data.consent !== "true") {
+  const consent = (payload?.data?.consent || "").toLowerCase();
+  if (!payload?.data?.email || !["on", "true", "yes"].includes(consent)) {
+    console.log("Skipped — no email or no consent", JSON.stringify(payload?.data));
     return new Response("Skipped — no email or no consent", { status: 200 });
   }
 
@@ -31,5 +33,3 @@ export default async (req) => {
   console.error(`Buttondown error ${res.status}: ${err}`);
   return new Response("Buttondown error", { status: 500 });
 };
-
-export const config = { path: "/.netlify/functions/submission-created" };
